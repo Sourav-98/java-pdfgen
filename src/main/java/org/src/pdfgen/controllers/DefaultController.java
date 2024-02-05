@@ -13,13 +13,14 @@ import org.src.pdfgen.services.api.DefaultService;
 import java.io.ByteArrayInputStream;
 
 @RestController
+@RequestMapping("/default-pdf")
 public class DefaultController {
 
     @Autowired
     DefaultService defaultService;
 
-    @GetMapping("/preview-default-pdf-html")
-    public ResponseEntity<String> viewDefaultPdfHtml() {
+    @GetMapping("/preview-html/{fileId}")
+    public ResponseEntity<String> viewDefaultPdfHtml(@PathVariable("fileId") String fileId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_HTML);
         return ResponseEntity
@@ -28,8 +29,8 @@ public class DefaultController {
                 .body(defaultService.pdfHtmlPreview(TemplateEnum.DEFAULT_TEMPLATE));
     }
 
-    @GetMapping("/preview-default-pdf")
-    public ResponseEntity viewDefaultPdf(@RequestParam("fileId") String fileId) throws Exception {
+    @GetMapping("/preview/{fileId}")
+    public ResponseEntity viewDefaultPdf(@PathVariable("fileId") String fileId) throws Exception {
         byte[] pdfData = defaultService.pdfGenerate(TemplateEnum.DEFAULT_TEMPLATE).toByteArray();
         InputStreamResource inputStreamResource = new InputStreamResource(new ByteArrayInputStream(pdfData));
         HttpHeaders headers = new HttpHeaders();
@@ -41,8 +42,8 @@ public class DefaultController {
                 .body(inputStreamResource);
     }
 
-    @GetMapping("/download-default-pdf")
-    public ResponseEntity<InputStreamResource> downloadDefaultPdf(@RequestParam("fileId") String fileId, HttpServletResponse response) throws Exception {
+    @GetMapping("/download/{fileId}")
+    public ResponseEntity<InputStreamResource> downloadDefaultPdf(@PathVariable("fileId") String fileId, HttpServletResponse response) throws Exception {
         byte[] pdfData = defaultService.pdfGenerate(TemplateEnum.DEFAULT_TEMPLATE).toByteArray();
         InputStreamResource inputStreamResource = new InputStreamResource(new ByteArrayInputStream(pdfData));
         HttpHeaders headers = new HttpHeaders();
